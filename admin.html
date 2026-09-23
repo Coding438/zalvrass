@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link rel="preconnect" href="https://script.google.com" crossorigin>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="dns-prefetch" href="https://images.unsplash.com">
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+  <title>Admin | Zelvra</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="css/admin.css">
+</head>
+<body>
+
+  <!-- LOGIN -->
+  <div class="login-screen" id="login-screen">
+    <div class="login-box">
+      <h1>Zel<span>vra</span></h1>
+      <p>Admin Panel — manage products &amp; orders</p>
+      <div class="login-error" id="login-error">Wrong email or password</div>
+      <input type="email" id="admin-email" placeholder="Email" autocomplete="username" value="">
+      <input type="password" id="admin-pass" placeholder="Password" autocomplete="current-password">
+      <button type="button" onclick="tryLogin()">Login</button>
+    </div>
+  </div>
+
+  <!-- ADMIN APP -->
+  <div class="admin-app" id="admin-app">
+    <header class="admin-header">
+      <div class="brand">Zel<span>vra</span> Admin</div>
+      <div class="header-actions">
+        <a href="index.html" target="_blank"><i class="fas fa-external-link-alt"></i> Store</a>
+        <button onclick="logout()"><i class="fas fa-sign-out-alt"></i> Logout</button>
+      </div>
+    </header>
+
+    <div class="tabs">
+      <button class="tab-btn active" data-tab="dashboard" onclick="switchTab('dashboard')">Dashboard</button>
+      <button class="tab-btn" data-tab="products" onclick="switchTab('products')">Products</button>
+      <button class="tab-btn" data-tab="orders" onclick="switchTab('orders')">Orders</button>
+      <button class="tab-btn" data-tab="settings" onclick="switchTab('settings')">Settings</button>
+    </div>
+
+    <div class="admin-content">
+
+      <!-- DASHBOARD -->
+      <div class="panel active" id="panel-dashboard">
+        <div class="panel-header">
+          <h2>Dashboard</h2>
+          <button class="btn btn-outline btn-sm" onclick="refreshAll()"><i class="fas fa-sync-alt"></i> Refresh</button>
+        </div>
+        <div id="config-warn" class="config-warning" style="display:none;"></div>
+        <div class="stats" id="stats">
+          <div class="stat-card"><div class="num" id="stat-products">–</div><div class="label">Products</div></div>
+          <div class="stat-card"><div class="num" id="stat-orders">–</div><div class="label">Orders</div></div>
+          <div class="stat-card"><div class="num" id="stat-pending">–</div><div class="label">Pending</div></div>
+          <div class="stat-card"><div class="num" id="stat-revenue">–</div><div class="label">Revenue (Rs)</div></div>
+        </div>
+        <h3 style="margin-bottom:12px;font-size:15px;color:#aaa;">Recent Orders</h3>
+        <div class="card-list" id="recent-orders"></div>
+      </div>
+
+      <!-- PRODUCTS -->
+      <div class="panel" id="panel-products">
+        <div class="panel-header">
+          <h2>Products</h2>
+          <div class="panel-actions" style="display:flex;flex-wrap:wrap;gap:8px;align-items:center;">
+            <button type="button" class="btn btn-outline btn-sm" onclick="downloadProductTemplate()" title="Download Excel (.xlsx) template">
+              <i class="fas fa-file-excel"></i> Excel Template
+            </button>
+            <button type="button" class="btn btn-outline btn-sm" onclick="downloadCsvTemplate()" title="Download CSV template">
+              <i class="fas fa-file-csv"></i> CSV Template
+            </button>
+            <label class="btn btn-outline btn-sm" style="cursor:pointer;margin:0;" title="Upload Excel or CSV">
+              <i class="fas fa-upload"></i> Bulk Upload
+              <input type="file" id="bulk-upload-input" accept=".xlsx,.xls,.csv,text/csv" style="display:none;" onchange="handleBulkUpload(event)">
+            </label>
+            <button type="button" class="btn btn-gold" onclick="openProductModal()"><i class="fas fa-plus"></i> Add Product</button>
+          </div>
+        </div>
+        <div id="bulk-progress" style="display:none;margin-bottom:16px;padding:12px 16px;background:#1a1a1a;border:1px solid #2a2a2a;border-radius:8px;font-size:13px;color:#aaa;"></div>
+        <div class="card-list" id="products-list">
+          <div class="loading"><div class="spinner"></div>Loading products…</div>
+        </div>
+      </div>
+
+      <!-- ORDERS -->
+      <div class="panel" id="panel-orders">
+        <div class="panel-header">
+          <h2>Orders</h2>
+          <select id="order-filter" onchange="renderOrders()" style="padding:8px 12px;border-radius:8px;background:#1a1a1a;color:#fff;border:1px solid #2a2a2a;">
+            <option value="all">All Status</option>
+            <option value="pending">Pending</option>
+            <option value="confirmed">Confirmed</option>
+            <option value="shipped">Shipped</option>
+            <option value="delivered">Delivered</option>
+            <option value="cancelled">Cancelled</option>
+          </select>
+        </div>
+        <div class="card-list" id="orders-list">
+          <div class="loading"><div class="spinner"></div>Loading orders…</div>
+        </div>
+      </div>
+
+      <!-- SETTINGS -->
+      <div class="panel" id="panel-settings">
+        <div class="panel-header"><h2>Settings & Setup</h2></div>
+        <div style="background:#1a1a1a;border:1px solid #2a2a2a;border-radius:10px;padding:20px;line-height:1.7;font-size:14px;">
+          <h3 style="margin-bottom:12px;color:#c9a227;">Google Sheets + Apps Script Setup</h3>
+          <p style="color:#aaa;margin-bottom:16px;">You need <strong>one</strong> Google Spreadsheet with <strong>Products</strong> and <strong>Orders</strong> tabs.</p>
+
+          <h4 style="margin:16px 0 8px;">1. Products Sheet – Headers (Row 1)</h4>
+          <code style="display:block;background:#0f0f0f;padding:12px;border-radius:6px;font-size:12px;overflow-x:auto;color:#e0c060;">
+id | name | range | price | oldPrice | image | image2 | image3 | badge | description | notes | stock | active | testerPrice
+          </code>
+
+          <h4 style="margin:16px 0 8px;">2. Orders Sheet – Headers (Row 1)</h4>
+          <code style="display:block;background:#0f0f0f;padding:12px;border-radius:6px;font-size:12px;overflow-x:auto;color:#e0c060;">
+id | orderId | customerName | phone | email | address | city | items | total | status | createdAt | notes
+          </code>
+
+          <h4 style="margin:16px 0 8px;">3. Deploy Apps Script Web App</h4>
+          <ol style="color:#aaa;padding-left:20px;">
+            <li>Go to <a href="https://script.google.com" target="_blank" style="color:#c9a227;">Google Apps Script</a> → Sign up (free)</li>
+            <li>Create API → connect Products Google Sheet → copy API ID</li>
+            <li>Create another API → connect Orders Google Sheet → copy API ID</li>
+            <li>Paste the Web App <code>/exec</code> URL in <code>js/config.js</code> as <code>APPS_SCRIPT_URL</code></li>
+          </ol>
+
+          <h4 style="margin:16px 0 8px;">4. Current Config</h4>
+          <p style="color:#aaa;">Apps Script URL: <code id="cfg-products">Not set</code></p>
+          <p style="color:#aaa;">Orders: <code id="cfg-orders">Not set</code></p>
+          <p style="color:#aaa;">Image upload (ImgBB): <code id="cfg-imgbb">Not set</code></p>
+          <p style="margin-top:12px;color:#888;font-size:12px;">Edit <code>js/config.js</code> to update API keys and admin password.</p>
+
+          <h4 style="margin:24px 0 8px;color:#c9a227;">5. Product image uploads</h4>
+          <p style="color:#aaa;margin-bottom:8px;">Admins upload PNG / JPG from their computer. Images go to ImgBB and the public URL is saved to the Products sheet automatically.</p>
+          <ol style="color:#aaa;padding-left:20px;margin-bottom:8px;">
+            <li>Go to <a href="https://api.imgbb.com/" target="_blank" style="color:#c9a227;">api.imgbb.com</a> → free sign-up</li>
+            <li>Copy your API key</li>
+            <li>Paste it as <code>IMGBB_API_KEY</code> in <code>js/config.js</code></li>
+          </ol>
+          <p style="color:#888;font-size:12px;">Accepted formats: PNG, JPG, JPEG only. Max size set by <code>IMAGE_MAX_MB</code> (default 8).</p>
+
+          <h4 style="margin:24px 0 8px;color:#c9a227;">Bulk Upload (Excel)</h4>
+          <p style="color:#aaa;margin-bottom:8px;">On the <strong>Products</strong> tab you can:</p>
+          <ul style="color:#aaa;padding-left:20px;margin-bottom:8px;">
+            <li>Download an Excel template (with sample rows + instructions)</li>
+            <li>Upload a filled .xlsx / .xls / .csv to add or update many products at once</li>
+          </ul>
+          <p style="color:#888;font-size:12px;">Required columns: name, price, image. Leave id empty for new products.</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- PRODUCT MODAL -->
+  <div class="modal-overlay" id="product-modal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3 id="product-modal-title">Add Product</h3>
+        <button class="modal-close" onclick="closeProductModal()">&times;</button>
+      </div>
+      <form id="product-form" onsubmit="saveProduct(event)">
+        <input type="hidden" id="p-id">
+        <div class="form-group">
+          <label>Product Name *</label>
+          <input type="text" id="p-name" required placeholder="e.g. Amber Oud">
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Category</label>
+            <input type="text" id="p-range" list="range-list" placeholder="e.g. Fashion, Beauty, Fitness, Kids, Electronics">
+            <datalist id="range-list">
+              <option value="Fashion">
+              <option value="Electronics">
+              <option value="Home">
+              <option value="Kitchen">
+              <option value="Beauty">
+              <option value="Fitness">
+              <option value="Kids">
+              <option value="Office">
+              <option value="Accessories">
+              <option value="Lifestyle">
+            </datalist>
+          </div>
+          <div class="form-group">
+            <label>Badge</label>
+            <select id="p-badge">
+              <option value="">None</option>
+              <option value="Sale">Sale</option>
+              <option value="New">New</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Price (Rs) *</label>
+            <input type="number" id="p-price" required min="0" step="1" placeholder="2500">
+          </div>
+          <div class="form-group">
+            <label>Old Price (for sale)</label>
+            <input type="number" id="p-oldPrice" min="0" step="1" placeholder="Optional">
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Stock</label>
+          <input type="number" id="p-stock" min="0" value="100" placeholder="100">
+        </div>
+        <div class="form-group">
+          <label>Main Image * <span class="label-hint">(PNG, JPG, JPEG only)</span></label>
+          <div class="img-upload" data-slot="1">
+            <input type="file" id="p-image-file" class="img-file-input" accept=".png,.jpg,.jpeg,image/png,image/jpeg" onchange="handleImageSelect(event, 'p-image', 'preview1', 'status1')">
+            <div class="img-upload-zone" onclick="document.getElementById('p-image-file').click()">
+              <i class="fas fa-cloud-upload-alt"></i>
+              <span class="img-upload-text">Click to upload from computer</span>
+              <span class="img-upload-sub">PNG · JPG · JPEG · max 8 MB</span>
+            </div>
+            <div class="img-upload-status" id="status1"></div>
+            <img class="img-preview" id="preview1" alt="">
+            <input type="hidden" id="p-image" required>
+            <button type="button" class="btn btn-outline btn-sm img-clear-btn" id="clear1" style="display:none;" onclick="clearImage('p-image','preview1','status1','p-image-file','clear1')">Remove image</button>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Image 2 <span class="label-hint">(optional)</span></label>
+            <div class="img-upload" data-slot="2">
+              <input type="file" id="p-image2-file" class="img-file-input" accept=".png,.jpg,.jpeg,image/png,image/jpeg" onchange="handleImageSelect(event, 'p-image2', 'preview2', 'status2')">
+              <div class="img-upload-zone compact" onclick="document.getElementById('p-image2-file').click()">
+                <i class="fas fa-cloud-upload-alt"></i>
+                <span class="img-upload-text">Upload</span>
+              </div>
+              <div class="img-upload-status" id="status2"></div>
+              <img class="img-preview" id="preview2" alt="">
+              <input type="hidden" id="p-image2">
+              <button type="button" class="btn btn-outline btn-sm img-clear-btn" id="clear2" style="display:none;" onclick="clearImage('p-image2','preview2','status2','p-image2-file','clear2')">Remove</button>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Image 3 <span class="label-hint">(optional)</span></label>
+            <div class="img-upload" data-slot="3">
+              <input type="file" id="p-image3-file" class="img-file-input" accept=".png,.jpg,.jpeg,image/png,image/jpeg" onchange="handleImageSelect(event, 'p-image3', 'preview3', 'status3')">
+              <div class="img-upload-zone compact" onclick="document.getElementById('p-image3-file').click()">
+                <i class="fas fa-cloud-upload-alt"></i>
+                <span class="img-upload-text">Upload</span>
+              </div>
+              <div class="img-upload-status" id="status3"></div>
+              <img class="img-preview" id="preview3" alt="">
+              <input type="hidden" id="p-image3">
+              <button type="button" class="btn btn-outline btn-sm img-clear-btn" id="clear3" style="display:none;" onclick="clearImage('p-image3','preview3','status3','p-image3-file','clear3')">Remove</button>
+            </div>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Description</label>
+          <textarea id="p-description" placeholder="Product description..."></textarea>
+        </div>
+        <div class="form-group">
+          <label>Tags / Features (separate with | )</label>
+          <input type="text" id="p-notes" placeholder="e.g. Cotton|Waterproof|Gift-ready">
+        </div>
+        <div class="form-group">
+          <label>Active (show on website)</label>
+          <select id="p-active">
+            <option value="yes">Yes – Visible</option>
+            <option value="no">No – Hidden</option>
+          </select>
+        </div>
+        <div class="form-actions">
+          <button type="button" class="btn btn-outline" onclick="closeProductModal()">Cancel</button>
+          <button type="submit" class="btn btn-gold" id="save-product-btn">Save Product</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ORDER MODAL -->
+  <div class="modal-overlay" id="order-modal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3>Order Details</h3>
+        <button class="modal-close" onclick="closeOrderModal()">&times;</button>
+      </div>
+      <div id="order-detail-body"></div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+  <script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
+  <script>
+    // Fallback CDN if primary SheetJS fails to load
+    if (typeof XLSX === 'undefined') {
+      document.write('<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"><\/script>');
+    }
+  </script>
+  <script src="js/config.js"></script>
+  <script src="js/admin.js"></script>
+</body>
+</html>

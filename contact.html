@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <link rel="preconnect" href="https://script.google.com" crossorigin>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="dns-prefetch" href="https://images.unsplash.com">
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Contact | Zelvra</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <div class="announcement">
+    <span>Enjoy Free Shipping on Orders Above Rs. 3,000</span>
+    <span>|</span>
+    <span>15 Days Hassle-Free Return</span>
+  </div>
+
+  <header class="header">
+    <div class="container">
+      <div class="header-top">
+        <button class="menu-toggle" onclick="toggleMenu()" aria-label="Menu">
+          <i class="fas fa-bars"></i>
+        </button>
+        <div class="search-box">
+          <input type="text" placeholder="Search products..." aria-label="Search">
+          <button aria-label="Search"><i class="fas fa-search"></i></button>
+        </div>
+        <a href="index.html" class="logo">Zelvra</a>
+        <div class="header-actions">
+<a href="#" onclick="openCart(); return false;">
+            <i class="fas fa-shopping-bag"></i> <span>CART</span>
+            <span class="cart-count">0</span>
+          </a>
+        </div>
+      </div>
+      <nav class="nav">
+        <ul class="nav-list">
+          <li><a href="index.html">Home</a></li>
+          <li><a href="shop.html">Shop</a></li>
+          <li><a href="about.html">Our Story</a></li>
+          <li><a href="contact.html" class="active">Contact</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <section class="page-hero">
+    <div class="container">
+      <h1>Contact Us</h1>
+      <div class="breadcrumb">Home / Contact</div>
+    </div>
+  </section>
+
+  <div class="container">
+    <div class="contact-grid">
+      <div>
+        <h2 style="font-family:'Playfair Display',serif;margin-bottom:20px;">Send us a message</h2>
+        <form class="contact-form" id="contact-form">
+          <input type="text" placeholder="Your Name" required>
+          <input type="email" placeholder="Your Email" required>
+          <input type="tel" placeholder="Phone Number">
+          <textarea placeholder="Your Message" required></textarea>
+          <button type="submit" class="btn btn-gold" style="width:100%;">Send Message</button>
+        </form>
+      </div>
+      <div class="contact-info">
+        <h3>Get in Touch</h3>
+        <p><i class="fas fa-phone" style="color:var(--gold);margin-right:10px;"></i> 0349 7414745</p>
+        <p><i class="fas fa-envelope" style="color:var(--gold);margin-right:10px;"></i> floralintense1@gmail.com</p>
+        <p><i class="fas fa-clock" style="color:var(--gold);margin-right:10px;"></i> Mon – Sat: 10:00 AM – 8:00 PM</p>
+
+        <h3 style="margin-top:40px;">Retail Outlets</h3>
+        <p style="color:#666;margin-bottom:15px;">We are expanding across major malls and cities in Pakistan. Visit our store locator page for the nearest outlet.</p>
+        <a href="#" class="btn btn-gold">Find Nearest Store</a>
+
+        <h3 style="margin-top:40px;">Follow Us</h3>
+        <div class="socials" style="margin-top:15px;">
+          <a href="#"><i class="fab fa-instagram"></i></a>
+          <a href="#"><i class="fab fa-facebook-f"></i></a>
+          <a href="#"><i class="fab fa-tiktok"></i></a>
+          <a href="#"><i class="fab fa-youtube"></i></a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <a href="index.html" class="logo">Zelvra</a>
+          <p>Quality products at honest prices.</p>
+        </div>
+        <div>
+          <h4>Shop</h4>
+          <ul>
+            <li><a href="shop.html">All Products</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4>Help</h4>
+          <ul>
+            <li><a href="contact.html">Contact Us</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4>Company</h4>
+          <ul>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>© 2026 Zelvra. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+    <!-- Mobile Bottom Navigation -->
+  <nav class="bottom-nav" aria-label="Mobile navigation">
+    <div class="bottom-nav-inner">
+      <a href="index.html" class="bottom-nav-item" data-nav="home"><i class="fas fa-home"></i><span>Home</span></a>
+      <button type="button" class="bottom-nav-item" onclick="toggleMenu()" aria-label="Menu"><i class="fas fa-bars"></i><span>Menu</span></button>
+      <a href="shop.html" class="bottom-nav-item" data-nav="shop"><i class="fas fa-th-large"></i><span>Shop</span></a>
+      <a href="#" class="bottom-nav-item" data-nav="wishlist" onclick="openCart(); return false;" aria-label="Cart"><i class="far fa-heart"></i><span>Wishlist</span><span class="bn-badge cart-count" data-count="0">0</span></a>
+      <a href="contact.html" class="bottom-nav-item active" data-nav="contact"><i class="fas fa-envelope"></i><span>Contact</span></a>
+    </div>
+  </nav>
+
+  <a href="https://wa.me/923497414745" class="whatsapp-float" target="_blank"><i class="fab fa-whatsapp"></i></a>
+
+  <div class="cart-overlay" id="cart-overlay" onclick="if(event.target===this) closeCart()">
+    <div class="cart-sidebar">
+      <div class="cart-header">
+        <h3>Your Cart</h3>
+        <button class="close-cart" onclick="closeCart()">&times;</button>
+      </div>
+      <div class="cart-items" id="cart-items"></div>
+      <div class="cart-footer">
+        <div class="cart-total"><span>Total</span><span id="cart-total">Rs. 0</span></div>
+        <button class="checkout-btn" onclick="openCheckout()">Checkout</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/config.js" defer></script>
+  <script src="js/main.js" defer></script>
+
+  <!-- Checkout Modal -->
+  <div class="cart-overlay" id="checkout-overlay" onclick="if(event.target===this) closeCheckout()">
+    <div class="cart-sidebar" style="width:400px;max-width:100%;">
+      <div class="cart-header">
+        <h3>Checkout</h3>
+        <button class="close-cart" onclick="closeCheckout()">&times;</button>
+      </div>
+      <form id="co-form" style="padding:20px;overflow-y:auto;flex:1;">
+        <div style="margin-bottom:12px;">
+          <label style="font-size:12px;color:#666;display:block;margin-bottom:4px;">Full Name *</label>
+          <input type="text" id="co-name" required style="width:100%;padding:12px;border:1px solid #ddd;border-radius:6px;font-size:14px;">
+        </div>
+        <div style="margin-bottom:12px;">
+          <label style="font-size:12px;color:#666;display:block;margin-bottom:4px;">Phone *</label>
+          <input type="tel" id="co-phone" required placeholder="03XX XXXXXXX" style="width:100%;padding:12px;border:1px solid #ddd;border-radius:6px;font-size:14px;">
+        </div>
+        <div style="margin-bottom:12px;">
+          <label style="font-size:12px;color:#666;display:block;margin-bottom:4px;">Email</label>
+          <input type="email" id="co-email" style="width:100%;padding:12px;border:1px solid #ddd;border-radius:6px;font-size:14px;">
+        </div>
+        <div style="margin-bottom:12px;">
+          <label style="font-size:12px;color:#666;display:block;margin-bottom:4px;">Address *</label>
+          <textarea id="co-address" required rows="2" style="width:100%;padding:12px;border:1px solid #ddd;border-radius:6px;font-size:14px;font-family:inherit;"></textarea>
+        </div>
+        <div style="margin-bottom:12px;">
+          <label style="font-size:12px;color:#666;display:block;margin-bottom:4px;">City *</label>
+          <input type="text" id="co-city" required style="width:100%;padding:12px;border:1px solid #ddd;border-radius:6px;font-size:14px;">
+        </div>
+        <div style="margin-bottom:16px;">
+          <label style="font-size:12px;color:#666;display:block;margin-bottom:4px;">Order Notes</label>
+          <input type="text" id="co-notes" placeholder="Optional" style="width:100%;padding:12px;border:1px solid #ddd;border-radius:6px;font-size:14px;">
+        </div>
+        <button type="submit" id="place-order-btn" class="checkout-btn">Place Order</button>
+      </form>
+    </div>
+  </div>
+
+</body>
+</html>

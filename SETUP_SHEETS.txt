@@ -1,0 +1,21 @@
+ZELVRA — GOOGLE SHEETS (NO SHEETDB)
+====================================
+
+1. Create spreadsheet "Zelvra Store" at sheets.google.com
+2. Extensions → Apps Script
+3. Paste entire GOOGLE_APPS_SCRIPT.js
+4. Run function: setupZelvraSheets  (creates Products + Orders tabs)
+5. Deploy → New deployment → Web app
+     Execute as: Me
+     Who has access: Anyone
+6. Copy the Web App URL (.../exec)
+7. Put it in js/config.js:
+
+   APPS_SCRIPT_URL: 'https://script.google.com/macros/s/XXXX/exec',
+
+Your current URL is already set in config.js.
+
+Website:
+- Opens → loads products from Products sheet
+- Checkout → writes to Orders sheet
+- Admin → add/edit/delete products & update order status
